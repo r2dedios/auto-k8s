@@ -18,6 +18,10 @@
     inv_master_hosts: "{{ groups['masters'] | length }}"
     inv_worker_hosts: "{{ groups['workers'] | length }}"
 
+- name: Validation - Wait 20 seconds...
+  pause:
+    seconds: 20
+
 
 - name: Validation - Check Master num
   shell: >

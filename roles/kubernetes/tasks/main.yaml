@@ -3,10 +3,6 @@
   include_tasks: pre-install.yaml
 
 
-- name: Docker
-  include_tasks: docker-ce.yaml
-
-
 - name: Install
   include_tasks: install.yaml
 

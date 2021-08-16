@@ -13,13 +13,6 @@
     - not worker.stat.exists
 
 
-- name: Worker - Iptables Rule
-  command: >
-    iptables -t nat -I KUBE-SERVICES -d 10.96.0.1/32 -p tcp -m comment --comment "default/kubernetes:https cluster IP" -m tcp --dport 443 -j KUBE-MARK-MASQ
-  when:
-    - not worker.stat.exists
-
-
 - name: Worker - Label
   command: kubectl label node {{ ansible_hostname }} --overwrite node-role.kubernetes.io/worker=
   delegate_to: "{{ groups.masters | first }}"

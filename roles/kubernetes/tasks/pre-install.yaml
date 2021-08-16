@@ -28,15 +28,3 @@
     path: /etc/fstab
     regexp: '^(/swap.*)'
     replace: '# \1'
-
-
-- name: Pre-Install - Create Kubernetes folders
-  file:
-    path: "{{ item }}"
-    state: directory
-    recurse: yes
-  run_once: true
-  with_items:
-    - "{{ kubernetes_install_path }}/manifests"
-    - "{{ kubernetes_install_path }}/images"
-  when: kubernetes_role == "master"

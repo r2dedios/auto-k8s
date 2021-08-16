@@ -1,0 +1,7 @@
+---
+# Select CRI (Container Runtime Interface) (current options: docker-ce)
+cri: 'docker-ce'
+
+# Docker Variables
+dockerce_version: '19.03.15-3.el7'
+

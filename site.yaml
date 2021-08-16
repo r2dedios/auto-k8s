@@ -3,29 +3,16 @@
     - all
   roles:
     - role: init
-      tags:
-        - always
-        - install
 
 
 - hosts:
     - haproxys
   roles:
     - role: haproxy
-      tags:
-        - always
-        - install
-      vars:
-        - pcs_overwrite_etc_hosts: true
-        - pcs_cluster_vip: 100.0.10.200
 
 
 - hosts:
     - kubernetes
   roles:
+    - role: cri
     - role: kubernetes
-      tags:
-        - always
-        - install
-      vars:
-        - kubernetes_cluster_control_plane_endpoint: 100.0.10.110

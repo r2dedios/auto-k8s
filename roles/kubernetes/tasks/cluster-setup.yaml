@@ -21,12 +21,10 @@
   run_once: true
 
 
-- name: Cluster Setup - Init
+- name: Cluster HA Setup - Init
   command: >
     kubeadm init
     --control-plane-endpoint {{ kubernetes_cluster_control_plane_endpoint }}:{{ kubernetes_cluster_apiserver_port }}
-    --apiserver-advertise-address {{ kubernetes_cluster_apiserver_ip }}
-    --apiserver-bind-port {{ kubernetes_cluster_apiserver_port }}
     --certificate-key {{ kubernetes_certificate_key.stdout }}
     --upload-certs
     --ignore-preflight-errors=all
@@ -35,3 +33,18 @@
   run_once: true
   when:
     - not cluster.stat.exists
+    - groups.masters | length > 1
+
+
+- name: Cluster Setup - Init
+  command: >
+    kubeadm init
+    --certificate-key {{ kubernetes_certificate_key.stdout }}
+    --upload-certs
+    --ignore-preflight-errors=all
+    {{ kubernetes_cluster_init_extra_opts }}
+  delegate_to: "{{ groups.masters | first }}"
+  run_once: true
+  when:
+    - not cluster.stat.exists
+    - groups.masters | length == 1

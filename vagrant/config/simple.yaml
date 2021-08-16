@@ -7,10 +7,10 @@
 - name: kworker-00
   box: centos/7
   ip: 100.0.10.120
-  mem: 2048
+  mem: 4096
   cpu: 2
 - name: kworker-01
   box: centos/7
   ip: 100.0.10.121
-  mem: 2048
+  mem: 4096
   cpu: 2

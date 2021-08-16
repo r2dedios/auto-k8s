@@ -1,22 +1,16 @@
 ---
-# Docker Variables
-docker_version: 19.03.15-3.el7
-
-
 # Kubernetes properties
 kubernetes_version: 1.19.8
-kubernetes_install_path: "/opt/auto-k8s/kubernetes"
 
 
 # Cluster properties
 kubernetes_cluster_control_plane_endpoint: ""
 kubernetes_cluster_apiserver_ip: ""
 kubernetes_cluster_apiserver_port: 6443
-kubernetes_cluster_pod_network: '172.16.0.0/16'
 kubernetes_cluster_init_extra_opts: ""
 
 # Master
-kubernetes_master_iface: eth0
+kubernetes_master_iface: eth1
 kubernetes_master_join_command_extra_opts: ""
 
 # Worker

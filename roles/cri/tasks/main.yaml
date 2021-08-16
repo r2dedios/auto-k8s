@@ -1,0 +1,4 @@
+---
+- name: Install Docker-CE
+  include_tasks: docker-ce.yaml
+  when: "cri == 'docker-ce'"
