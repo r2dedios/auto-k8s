@@ -1,0 +1,8 @@
+---
+- name: SELinux - Disable on boot
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: SELinux - Disable on runtime
+  command: setenforce 0

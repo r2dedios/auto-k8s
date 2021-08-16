@@ -1,0 +1,9 @@
+---
+- name: Pre-install Checks - OS not supported
+  fail:
+    msg: Target OS is not supported {{ ansible_distribution }}
+  when:
+    - ansible_distribution != "CentOS"
+    - ansible_distribution != "RedHat"
+    - ansible_distribution_version != 7
+    - ansible_distribution_version != 8

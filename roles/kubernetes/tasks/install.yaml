@@ -1,0 +1,36 @@
+---
+- name: Install - Add Repositories
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes
+    enabled: true
+    gpgcheck: true
+    repo_gpgcheck: true
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgkey:
+      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+
+- name: Repository - Add GPG keys
+  rpm_key:
+    key: "{{ item }}"
+    state: present
+  with_items:
+    - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+    - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+
+- name: Install - Kubelet
+  yum:
+    name:
+      - kubelet-{{ kubernetes_version }}
+      - kubeadm-{{ kubernetes_version }}
+    state: present
+
+
+- name: Install - Kubelet Enable
+  service:
+    name: kubelet
+    enabled: true
+    daemon_reload: yes

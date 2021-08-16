@@ -1,0 +1,60 @@
+---
+- name: Docker - Remove RHEL Docker
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+
+
+- name: Docker - Install yum-utils
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - yum-utils
+
+
+- name: Docker - Install Docker-CE Repository
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+
+
+- name: Docker - Install
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-ce-{{ docker_version }}
+    - docker-ce-cli-{{ docker_version }}
+    - containerd.io
+  notify: dockerce-restart
+
+
+- name: Docker - Create configdir
+  file:
+    path: /etc/docker
+    state: directory
+
+
+- name: Docker - Set config
+  copy:
+    src: docker-daemon.json
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 644
+    checksum: 27a3d586165991400d2f4c8e053b5a8b00f45558
+  notify: dockerce-restart
+
+
+- name: Docker - Force all handlers
+  meta: flush_handlers

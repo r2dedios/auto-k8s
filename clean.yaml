@@ -1,0 +1,24 @@
+---
+- hosts:
+    - kubernetes
+  tasks:
+    - name: Kubeadm Reset
+      command: kubeadm reset -f
+
+    - name: Remove all containers
+      shell: docker rm -f $(docker ps -a -q)
+      ignore_errors: true
+
+    - name: Remove all images
+      shell: docker rmi -f $(docker images -a -q)
+      ignore_errors: true
+
+    - name: Remove packages
+      yum:
+        name:
+          - kubelet
+          - kubeadm
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: absent

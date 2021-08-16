@@ -1,0 +1,80 @@
+---
+- name: Pacemaker - Overwrite /etc/hosts
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+  when: pcs_overwrite_etc_hosts
+
+
+- name: Pacemaker - Install packages
+  yum:
+    name:
+      - corosync
+      - pcs
+      - pacemaker
+    state: present
+
+
+- name: Pacemaker - Enable Services
+  systemd:
+    name: "{{ item }}"
+    daemon_reload: yes
+    enabled: yes
+  with_items:
+    - corosync
+    - pcsd
+    - pacemaker
+
+
+- name: Pacemaker - Set hacluster password
+  user:
+    name: hacluster
+    update_password: always
+    password: "{{ pcs_hacluster_user_pass|password_hash('sha512') }}"
+
+
+- name: Pacemaker - PCSD startup
+  systemd:
+    name: pcsd
+    state: started
+
+
+- name: Pacemaker - Set cluster node list
+  set_fact:
+    pcs_cluster_nodes: '{{ ansible_play_hosts_all | join(" ") }}'
+
+
+- name: Pacemaker - Cluster auth
+  command: pcs cluster auth {{ pcs_cluster_nodes }} -u hacluster -p {{ pcs_hacluster_user_pass }}
+  delegate_to: "{{ ansible_play_hosts_all | first }}"
+  run_once: true
+
+
+- name: Pacemaker - Cluster Setup
+  command: pcs cluster setup --name {{ pcs_cluster_name }} {{ pcs_cluster_nodes }} --force
+  delegate_to: "{{ ansible_play_hosts_all | first }}"
+  run_once: true
+
+
+- name: Pacemaker - Cluster Start
+  command: pcs cluster start --all
+  delegate_to: "{{ ansible_play_hosts_all | first }}"
+  run_once: true
+
+
+- name: Pacemaker - disable STONITH
+  command: pcs property set stonith-enabled=false
+  delegate_to: "{{ ansible_play_hosts_all | first }}"
+  run_once: true
+
+
+- name: Pacemaker - Ignore Quorum Policy
+  command: pcs property set no-quorum-policy=ignore
+  delegate_to: "{{ ansible_play_hosts_all | first }}"
+  run_once: true
+
+
+- name: Pacemaker - Create VIP
+  command: pcs resource create {{ pcs_cluster_name }}_vip ocf:heartbeat:IPaddr2 ip={{ pcs_cluster_vip }} cidr_netmask=32 nic={{ pcs_cluster_vip_nic }} op monitor interval=30s
+  delegate_to: "{{ ansible_play_hosts_all | first }}"
+  run_once: true

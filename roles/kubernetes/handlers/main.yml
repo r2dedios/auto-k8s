@@ -1,0 +1,6 @@
+---
+- name: dockerce-restart
+  service:
+    name: docker
+    state: restarted
+    enabled: yes

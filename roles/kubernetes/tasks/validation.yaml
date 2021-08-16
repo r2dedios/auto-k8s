@@ -1,0 +1,39 @@
+---
+- name: Validation - Check kubectl access
+  shell: >
+    kubectl version
+  register: kubectl
+  run_once: true
+
+
+- name: Validation - Cannot connect with Kubernetes Cluster
+  fail:
+    msg: "Cannot connect with Kubernetes Cluster"
+  when: kubectl.rc != 0
+  run_once: true
+
+
+- name: Validation - Get Host num
+  set_fact:
+    inv_master_hosts: "{{ groups['masters'] | length }}"
+    inv_worker_hosts: "{{ groups['workers'] | length }}"
+
+
+- name: Validation - Check Master num
+  shell: >
+    [[ $(kubectl get nodes --selector='node-role.kubernetes.io/master' | awk 'BEGIN {i=0}; $2 == "Ready" {i+=1}; END {print i};') -eq {{ inv_master_hosts }} ]]
+  register: cluster_master_hosts
+  run_once: true
+  retries: 5
+  delay: 12
+  until: cluster_master_hosts.rc == 0
+
+
+- name: Validation - Check Worker num
+  shell: >
+    [[ $(kubectl get nodes --selector='node-role.kubernetes.io/worker' | awk 'BEGIN {i=0}; $2 == "Ready" {i+=1}; END {print i};') -eq {{ inv_worker_hosts }} ]]
+  register: cluster_worker_hosts
+  run_once: true
+  retries: 5
+  delay: 12
+  until: cluster_master_hosts.rc == 0

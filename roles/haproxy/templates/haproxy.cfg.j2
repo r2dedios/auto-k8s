@@ -1,0 +1,29 @@
+global
+    user haproxy
+    group haproxy
+
+defaults
+    mode http
+    log global
+    retries 2
+    timeout connect 3000ms
+    timeout server 15m
+    timeout client 15m
+
+frontend kubernetes
+    bind {{ pcs_cluster_vip }}:{{ pcs_cluster_port }}
+    option tcplog
+    mode tcp
+    default_backend kubernetes-master-nodes
+
+backend kubernetes-master-nodes
+    mode tcp
+    balance roundrobin
+    option tcp-check
+    {% for master in groups['masters'] %}
+      {% if hostvars[master]['ansible_host'] is defined %}
+    server {{ master }} {{ hostvars[master]['ansible_host'] }}:{{ kubernetes_cluster_apiserver_port }} check fall 3 rise 2
+      {% else %}
+    server {{ master.split(".")[0] }} {{ master }}:{{ kubernetes_cluster_apiserver_port }} check fall 3 rise 2
+    {% endif %}
+    {% endfor %}

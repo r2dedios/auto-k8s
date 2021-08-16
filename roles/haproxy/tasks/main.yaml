@@ -1,0 +1,7 @@
+---
+- name: Pacemaker
+  include_tasks: pacemaker.yaml
+
+
+- name: HAProxy
+  include_tasks: haproxy.yaml

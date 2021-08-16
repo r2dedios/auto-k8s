@@ -1,0 +1,7 @@
+---
+- name: Pre-install Checks
+  include_tasks: preinstall.yaml
+
+
+- name: SELinux
+  include_tasks: selinux.yaml

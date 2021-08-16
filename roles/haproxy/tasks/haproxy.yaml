@@ -1,0 +1,33 @@
+---
+- name: HAProxy - Install package
+  yum:
+    name:
+      - haproxy
+    state: present
+
+
+- name: HAProxy - Config Template
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    owner: haproxy
+    group: haproxy
+    mode: 0644
+
+
+- name: HAProxy - Allow binding to non-local IP on runtime
+  sysctl:
+    name: net.ipv4.ip_nonlocal_bind
+    value: "1"
+    state: present
+    sysctl_file: /etc/sysctl.d/haproxy.conf
+    reload: yes
+    sysctl_set: yes
+
+
+- name: HAProxy - Startup
+  systemd:
+    name: haproxy
+    state: restarted
+    daemon_reload: yes
+    enabled: yes

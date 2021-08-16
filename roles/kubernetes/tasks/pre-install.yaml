@@ -1,0 +1,42 @@
+---
+- name: Pre-Install - Enable br_netfilter Kernel module
+  modprobe:
+    name: br_netfilter
+    state: present
+
+
+- name: Pre-Install - Set Bridging and Forwarding rules
+  sysctl:
+    name: "{{ item.attribute }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/kubernetes.conf
+    reload: yes
+    sysctl_set: yes
+  with_items:
+    - { attribute: net.bridge.bridge-nf-call-iptables, value: 1 }
+    - { attribute: net.bridge.bridge-nf-call-ip6tables, value: 1 }
+    - { attribute: net.ipv4.ip_forward, value: 1 }
+
+
+- name: Pre-Install - Disable SWAPs on runtime
+  shell: swapoff -a
+
+
+- name: Pre-Install - Disabled SWAPs mount at boot
+  replace:
+    path: /etc/fstab
+    regexp: '^(/swap.*)'
+    replace: '# \1'
+
+
+- name: Pre-Install - Create Kubernetes folders
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  run_once: true
+  with_items:
+    - "{{ kubernetes_install_path }}/manifests"
+    - "{{ kubernetes_install_path }}/images"
+  when: kubernetes_role == "master"
