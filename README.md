@@ -25,8 +25,10 @@ sudo usermod --append --groups libvirt `whoami`
 ## Deployment
 ### Create VMs
 ```sh
+cd vagrant
 vagrant --cluster-flavour=./config/<FLAVOUR>.yaml up
 vagrant --cluster-flavour=./config/<FLAVOUR>.yaml status
+cd ..
 ```
 
 ### Launch Ansible
@@ -54,3 +56,19 @@ ansible-playbook -i inventories/$AUTO_K8S_FLAVOUR -b site.yaml
 kubectl --kubeconfig=./build/kubeconfig get nodes
 kubectl --kubeconfig=./build/kubeconfig get pods -A
 ```
+
+### Example
+This section contains an example deployment using the "simple" infrastructure
+flavour
+```sh
+cd vagrant
+vagrant --cluster-flavour=./config/simple.yaml up
+vagrant --cluster-flavour=./config/simple.yaml status
+cd ..
+
+ansible-playbook -i inventories/simple -b site.yaml
+
+export KUBECONFIG=./build/kubeconfig
+kubectl get nodes
+```
+
