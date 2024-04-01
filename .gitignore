@@ -1,3 +1,4 @@
 vagrant/.vagrant
 vagrant/.ssh.config
+.vagrant/
 build/*
