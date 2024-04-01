@@ -1,0 +1,39 @@
+---
+- name: CRIO - Remove other Docker versions
+  package:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker
+    - docker-client
+    - docker-client-latest
+    - docker-common
+    - docker-latest
+    - docker-latest-logrotate
+    - docker-logrotate
+    - docker-engine
+
+
+- name: CRIO - Install
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - docker-ce-{{ dockerce_version }}
+    - docker-ce-cli-{{ dockerce_version }}
+    - containerd.io
+    - containers-common
+    - device-mapper-devel
+    - git
+    - glib2-devel
+    - glibc-devel
+    - glibc-static
+    - go
+    - gpgme-devel
+    - libassuan-devel
+    - libgpg-error-devel
+    - libseccomp-devel
+    - libselinux-devel
+    - pkgconfig
+    - make
+    - run

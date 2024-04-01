@@ -2,3 +2,25 @@
 - name: Install Docker-CE
   include_tasks: docker-ce.yaml
   when: "cri == 'docker-ce'"
+
+- name: Install CRIO
+  include_tasks: docker-ce.yaml
+  when: "cri == 'crio'"
+
+- name: Install CRI - Add user to 'docker' group
+  user:
+    name: vagrant
+    groups: docker
+    append: yes
+
+- name: Install CRI - Enabling CRI Plugin
+  lineinfile:
+    path: /etc/containerd/config.toml
+    regexp: "^disabled_plugins .*$"
+    state: absent
+  become: true
+
+- name: Install CRI - Restarting ContainerD
+  service:
+    name: containerd
+    state: restarted

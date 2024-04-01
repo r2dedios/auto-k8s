@@ -25,7 +25,7 @@
 
 - name: Validation - Check Master num
   shell: >
-    [[ $(kubectl get nodes --selector='node-role.kubernetes.io/master' | awk 'BEGIN {i=0}; $2 == "Ready" {i+=1}; END {print i};') -eq {{ inv_master_hosts }} ]]
+    [[ $(kubectl get nodes --selector='node-role.kubernetes.io/control-plane' | awk 'BEGIN {i=0}; $2 == "Ready" {i+=1}; END {print i};') -eq {{ inv_master_hosts }} ]]
   register: cluster_master_hosts
   run_once: true
   retries: 5
@@ -38,6 +38,6 @@
     [[ $(kubectl get nodes --selector='node-role.kubernetes.io/worker' | awk 'BEGIN {i=0}; $2 == "Ready" {i+=1}; END {print i};') -eq {{ inv_worker_hosts }} ]]
   register: cluster_worker_hosts
   run_once: true
-  retries: 5
-  delay: 12
+  retries: 10
+  delay: 20
   until: cluster_master_hosts.rc == 0

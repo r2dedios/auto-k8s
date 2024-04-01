@@ -15,7 +15,7 @@
 
 
 - name: Cluster Setup - Generate certificate-key
-  command: kubeadm alpha certs certificate-key
+  command: kubeadm certs certificate-key
   register: kubernetes_certificate_key
   delegate_to: "{{ groups.masters | first }}"
   run_once: true
@@ -31,9 +31,8 @@
     {{ kubernetes_cluster_init_extra_opts }}
   delegate_to: "{{ groups.masters | first }}"
   run_once: true
-  when:
-    - not cluster.stat.exists
-    - groups.masters | length > 1
+  become: true
+  become_user: root
 
 
 - name: Cluster Setup - Init

@@ -6,10 +6,9 @@
     enabled: true
     gpgcheck: true
     repo_gpgcheck: true
-    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    baseurl: https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/rpm/
     gpgkey:
-      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
-      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+      - https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/rpm/repodata/repomd.xml.key
 
 
 - name: Install - Add Repositories GPG keys
@@ -24,9 +23,9 @@
 - name: Install - Kubelet
   yum:
     name:
-      - kubelet-{{ kubernetes_version }}
-      - kubeadm-{{ kubernetes_version }}
-      - kubectl-{{ kubernetes_version }}
+      - kubelet
+      - kubeadm
+      - kubectl
     state: present
 
 

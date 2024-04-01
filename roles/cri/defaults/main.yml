@@ -1,5 +1,5 @@
 ---
-# Select CRI (Container Runtime Interface) (current options: docker-ce)
+# Select CRI (Container Runtime Interface) (current options: docker-ce, crio)
 cri: 'docker-ce'
 
 # Docker Variables

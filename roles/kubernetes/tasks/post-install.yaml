@@ -8,7 +8,7 @@
 
 - name: Post-Install - Install Weave
   command: >
-    kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version={{ weave_k8s_version.stdout }}"
+    kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
   register: weave
   changed_when: "'created' in weave.stdout"
   run_once: true

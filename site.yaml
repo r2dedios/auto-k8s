@@ -15,4 +15,6 @@
     - kubernetes
   roles:
     - role: cri
+      vars:
+        cri: 'docker-ce'
     - role: kubernetes

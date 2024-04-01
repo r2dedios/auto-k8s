@@ -58,3 +58,9 @@
 
 - name: Docker - Force all handlers
   meta: flush_handlers
+
+- name: Docker - Adding Vagrant user to Docker group
+  user:
+    name: vagrant
+    groups: docker
+    append: yes
