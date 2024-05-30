@@ -1,0 +1,16 @@
+---
+- name: Config - Create NFS Share folder
+  file:
+    path: /nfs
+    state: directory
+    mode: '2770'
+
+- name: Config - Configuring exports
+  lineinfile:
+    path: /etc/exports
+    insertafter: EOF
+    line: "/nfs *(rw,sync,no_root_squash)"
+
+- name: Config - Exporting NFS endpoints
+  command:
+    cmd: exportfs -rv

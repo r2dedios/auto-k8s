@@ -1,0 +1,6 @@
+---
+- name: Install NFS Server
+  include_tasks: install.yaml
+
+- name: Configure NFS Server
+  include_tasks: config.yaml
