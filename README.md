@@ -50,6 +50,32 @@ cd -
 ansible-playbook -i inventories/$AUTO_K8S_FLAVOUR -b site.yaml
 ```
 
+### Flavours
+1. Simple: Simple k8s cluster without storage, single master node and two
+   workers.
+    ```sh
+    export AUTO_K8S_FLAVOUR=simple
+    cd vagrant
+    vagrant --cluster-flavour=./config/$AUTO_K8S_FLAVOUR.yaml up
+    vagrant --cluster-flavour=./config/$AUTO_K8S_FLAVOUR.yaml status
+    cd -
+    ansible-playbook -i inventories/$AUTO_K8S_FLAVOUR -b site.yaml
+    ```
+
+2. NFS-Storage: Deploys one master and two workers and a forth server for
+   providing NFS Storage.
+    ```sh
+    export AUTO_K8S_FLAVOUR=nfs-storage
+    cd vagrant
+    vagrant --cluster-flavour=./config/$AUTO_K8S_FLAVOUR.yaml up
+    vagrant --cluster-flavour=./config/$AUTO_K8S_FLAVOUR.yaml status
+    cd -
+    ansible-playbook -i inventories/$AUTO_K8S_FLAVOUR -b site.yaml
+
+    # Test
+    export KUBECONFIG=./build/kubeconfig
+    oc apply -f inventories/nfs-storage/nfs-storage-test.yaml
+    ```
 
 ### Access Kubernetes
 ```sh
