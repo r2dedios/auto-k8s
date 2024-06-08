@@ -62,7 +62,7 @@ ansible-playbook -i inventories/$AUTO_K8S_FLAVOUR -b site.yaml
     ansible-playbook -i inventories/$AUTO_K8S_FLAVOUR -b site.yaml
     ```
 
-2. NFS-Storage: Deploys one master and two workers and a forth server for
+2. NFS-Storage: Deploys one master and two workers and a fourth server for
    providing NFS Storage.
     ```sh
     export AUTO_K8S_FLAVOUR=nfs-storage
