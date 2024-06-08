@@ -1,0 +1,15 @@
+---
+- name: Install - NFS
+  yum:
+    name:
+      - nfs-utils
+    state: present
+
+- name: Install - Enable service
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - nfs-server
+    - rpcbind

@@ -18,3 +18,10 @@
       vars:
         cri: 'docker-ce'
     - role: kubernetes
+
+
+- hosts:
+    - nfs
+  roles:
+    - role: nfs
+    - role: nfs-provisioner

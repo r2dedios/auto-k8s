@@ -1,0 +1,16 @@
+[haproxys]
+
+[nfs]
+nfs-server ansible_host=100.0.10.130
+
+
+[kubernetes:children]
+masters
+workers
+
+[masters]
+kmaster-00 ansible_host=100.0.10.110
+
+[workers]
+kworker-00 ansible_host=100.0.10.120
+kworker-01 ansible_host=100.0.10.121
