@@ -14,23 +14,26 @@ def fail_with_message(msg)
     fail Vagrant::Errors::VagrantError.new, msg
 end
 
-opts = GetoptLong.new(
-    [ '--cluster-flavour', GetoptLong::OPTIONAL_ARGUMENT ]
-)
+flavour = ''
+if ENV.include?("AUTO_K8S_FLAVOUR")
+    flavour = ENV["AUTO_K8S_FLAVOUR"]
+else
+    opts = GetoptLong.new(
+        [ '--flavour', GetoptLong::OPTIONAL_ARGUMENT ]
+    )
 
-flavour=''
-
-opts.each do |opt, arg|
-  case opt
-    when '--cluster-flavour'
-      flavour=arg
-  end
+    opts.each do |opt, arg|
+      case opt
+        when '--flavour'
+          flavour=arg
+      end
+    end
 end
 
 
 # Read YAML file with cluster details
-config_file = "#{flavour}"
-if File.exists?(config_file)
+config_file = "config/#{flavour}.yaml"
+if File.exist?(config_file)
     cluster = YAML.load_file(config_file)
 else
     fail_with_message "#{config_file} was not found."
