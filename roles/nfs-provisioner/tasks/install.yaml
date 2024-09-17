@@ -3,7 +3,7 @@
   uri:
     url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
     dest: /tmp/get_helm.sh
-    mode: '0777'
+    mode: "0777"
 
 - name: Install - Git
   yum:
@@ -15,21 +15,30 @@
   copy:
     src: ./build/kubeconfig
     dest: /tmp/kubeconfig
+    mode: "0400"
+
+- name: Install - Link Helm binary into PATH
+  file:
+    src: "/usr/local/bin/helm"
+    dest: "/usr/bin/helm"
+    force: true
+    state: link
 
 - name: Install - Install Helm
-  command:
-    cmd: /tmp/get_helm.sh
-  ignore_errors: true
+  shell: |
+    DESIRED_VERSION=v{{ helm_version }} /tmp/get_helm.sh
 
 - name: Install - Add Helm repo
   command:
-    cmd: /usr/local/bin/helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+    cmd: helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
 
 - name: Install - Install HELM NFS provisioner
   shell: |
     export KUBECONFIG=/tmp/kubeconfig
-    /usr/local/bin/helm install nfs-subdir-external-provisioner \
+    helm install nfs-subdir-external-provisioner \
       nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
       --set nfs.server=100.0.10.130 \
       --set nfs.path=/nfs \
       --set storageClass.onDelete=true
+  register: nsf_provisioner_install
+  failed_when: "nsf_provisioner_install.rc != 0 and 'cannot re-use a name that is still in use' not in nsf_provisioner_install.stderr"
