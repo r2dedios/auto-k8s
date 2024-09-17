@@ -5,7 +5,6 @@
   register: weave_k8s_version
   run_once: true
 
-
 - name: Post-Install - Install Weave
   command: >
     kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml

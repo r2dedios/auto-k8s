@@ -2,14 +2,11 @@
 - name: Pre-Install
   include_tasks: pre-install.yaml
 
-
 - name: Install
   include_tasks: install.yaml
 
-
 - name: Cluster Setup
   include_tasks: cluster-setup.yaml
-
 
 - name: Gen Kubejoin
   command: >
@@ -18,21 +15,17 @@
   delegate_to: "{{ groups.masters | first }}"
   run_once: true
 
-
 - name: Master
   include_tasks: master.yaml
   when: kubernetes_role == "master"
-
 
 - name: Worker
   include_tasks: worker.yaml
   when: kubernetes_role == "worker"
 
-
 - name: Post-Install
   include_tasks: post-install.yaml
   when: kubernetes_role == "master"
-
 
 - name: Validation
   include_tasks: validation.yaml
