@@ -10,7 +10,6 @@
     gpgkey:
       - https://pkgs.k8s.io/core:/stable:/{{ kubernetes_version }}/rpm/repodata/repomd.xml.key
 
-
 - name: Install - Add Repositories GPG keys
   rpm_key:
     key: "{{ item }}"
@@ -18,7 +17,6 @@
   with_items:
     - https://packages.cloud.google.com/yum/doc/yum-key.gpg
     - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-
 
 - name: Install - Kubelet
   yum:
@@ -28,9 +26,8 @@
       - kubectl
     state: present
 
-
 - name: Install - Kubelet Enable
   service:
     name: kubelet
     enabled: true
-    daemon_reload: yes
+    daemon_reload: true

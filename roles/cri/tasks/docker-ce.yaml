@@ -13,7 +13,6 @@
     - docker-logrotate
     - docker-engine
 
-
 - name: Docker-CE - Install yum-utils
   package:
     name: "{{ item }}"
@@ -21,12 +20,10 @@
   with_items:
     - yum-utils
 
-
 - name: Docker-CE - Install Docker-CE Repository
   get_url:
     url: https://download.docker.com/linux/centos/docker-ce.repo
     dest: /etc/yum.repos.d/docker-ce.repo
-
 
 - name: Docker-CE - Install
   package:
@@ -38,12 +35,10 @@
     - containerd.io
   notify: Docker-CE-restart
 
-
 - name: Docker-CE - Create configdir
   file:
     path: /etc/docker
     state: directory
-
 
 - name: Docker-CE - Set config
   copy:
@@ -54,6 +49,13 @@
     mode: 644
     checksum: 27a3d586165991400d2f4c8e053b5a8b00f45558
   notify: Docker-CE-restart
+  when: false
+
+- name: Docker-CE - Add user to 'docker' group
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
 
 - name: Docker - Force all handlers
   meta: flush_handlers

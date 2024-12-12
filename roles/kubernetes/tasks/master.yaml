@@ -4,7 +4,6 @@
     path: "/etc/kubernetes/pki/ca.key"
   register: cluster
 
-
 - name: Master - Gen Cert
   command: >
     kubeadm init phase upload-certs --upload-certs
@@ -12,11 +11,9 @@
   delegate_to: "{{ groups.masters | first }}"
   run_once: true
 
-
 - name: Master - Get Master IP
   set_fact:
     kubernetes_cluster_apiserver_ip: "{{ hostvars[inventory_hostname]['ansible_' + kubernetes_master_iface].ipv4.address }}"
-
 
 - name: Master - Join
   command: >
@@ -30,26 +27,23 @@
     - not cluster.stat.exists
   throttle: 1
 
-
 - name: Master - Create .kube folder
   file:
     path: ~/.kube
     state: directory
-    mode: 0755
-
+    mode: "0755"
 
 - name: Master - Copy the kubectl admin.conf to ~/.kube/config
   copy:
     src: /etc/kubernetes/admin.conf
     dest: ~/.kube/config
-    remote_src: yes
-    mode: 0644
-
+    remote_src: true
+    mode: "0644"
 
 - name: Master - Get kubeconfig to Ansible Master
   fetch:
     src: /etc/kubernetes/admin.conf
     dest: ./build/kubeconfig
-    flat: yes
+    flat: true
   delegate_to: "{{ groups.masters | first }}"
   run_once: true
